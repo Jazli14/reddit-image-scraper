@@ -1,9 +1,11 @@
 # Reddit Image Scraper
 
 This is a basic Reddit image scraper on Python that can download images and gifs to your computer.
-It uses the Reddit API
-The user will need to create their own Reddit API and copy the personal use script and secret key values.
-Using this [link](https://www.reddit.com/prefs/apps)
+
+It uses the Reddit developer API and PRAW (Python Reddit API Wrapper) to achieve this.
+The user will need to create to have their own Reddit API and copy the personal use script and secret key values.
+
+If the user hasn't created their own yet, they can use this [link](https://www.reddit.com/prefs/apps).
 
 ## How to Use
 The user can create a text file containing your Reddit credentials that is line separates their personal use script, secret key, app name, user name and password
