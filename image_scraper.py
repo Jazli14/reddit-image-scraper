@@ -4,7 +4,7 @@ import os
 
 
 def create_subreddit_directory(subreddit: str) -> str:
-    """ Creates the subreddit folder for the images and videos and returns its file path.
+    """ Creates the subreddit folder for the images and returns its file path.
 
     Args:
         subreddit: A string representing the subreddit that was chosen.
@@ -21,7 +21,7 @@ def create_subreddit_directory(subreddit: str) -> str:
     return file_path 
 
 
-def ask_user() -> tuple(list, list):
+def ask_user() -> tuple[list]:
     """ Gets input from the user for the credentials of their account and API
         And requests the user's chosen number of images, subreddit and category.
 
@@ -146,6 +146,10 @@ def scrape_media(num_image: int, subreddit: str, category: str) -> None:
         # current_post = next(subreddit.top(limit=num_image))
         # Extract the file format from the url
         ending = current_post.url.rsplit(".")[-1]
+
+        # If no images or gifs were to be found then skip the post
+        if "png" not in ending or "jpg" not in ending or "gif" not in ending or "gifv" not in ending:
+            continue
         print(current_post.url)
         try:
             full_file_name = os.path.join(subreddit_directory, subreddit + str(image_number) + "." + ending)
@@ -175,5 +179,5 @@ reddit = reddit_API(reddit_credentials)
 # Saves the subreddit object passing in the chosen_subreddit
 subreddit = reddit.subreddit(chosen_subreddit)
 
-# Calls scrape media to download the images and videos from the subreddit
+# Calls scrape media to download the images and gifs from the subreddit
 scrape_media(number_of_images, chosen_subreddit, chosen_category)
