@@ -5,6 +5,13 @@ import os
 
 def create_subreddit_directory(subreddit: str) -> str:
     """ Creates the subreddit folder for the images and videos and returns its file path.
+
+    Args:
+        subreddit: A string representing the subreddit that was chosen.
+
+    Returns:
+        A file path string representing the subreddit.
+
     """
     file_path = os.path.join(os.getcwd(), "media", subreddit)
     
@@ -14,17 +21,25 @@ def create_subreddit_directory(subreddit: str) -> str:
     return file_path 
 
 
-def ask_user() -> list:
-    """ Gets input from the user for the credentials of their account and API.
-        And requests the user's chosen number of images, subreddit and category
+def ask_user() -> tuple(list, list):
+    """ Gets input from the user for the credentials of their account and API
+        And requests the user's chosen number of images, subreddit and category.
+
+    Args: 
+        None.
+    
+    Returns:
+        A tuple that first contains the list of credentials for the API and a list of inputs from the user.
     """
     list_of_creds = []
     list_of_inputs = []
 
     txt_or_not = input("Do you have a credentials file? Enter yes or no\n")
+
+    # If the user has a text file for credentials
     if (txt_or_not.lower() == "yes"):
         credential_file = input("Enter the name of the crendentials file:\n") + ".txt"
-        read_creds(credential_file, list_of_creds)
+        list_of_creds = read_creds(credential_file)
         
 
     # Asks for the user to input their credentials manually
@@ -43,8 +58,14 @@ def ask_user() -> list:
     return list_of_creds, list_of_inputs
 
 
-def reddit_API(credentials: list):
+def reddit_API(credentials: list) -> praw.Reddit:
     """ Creates the praw Reddit object by passing in the credentials.
+
+    Args:
+        credentials: A list of credentials that will be used to create the object.
+
+    Returns:
+        A praw.Reddit object with the passed in credentials.
     """
     personal_use_script = credentials[0]
     secret = credentials[1]
@@ -58,23 +79,39 @@ def reddit_API(credentials: list):
                         user_agent=user_agent,
                         username=username,
                         password=password)
+
     return reddit
 
 
-def read_creds(txt_file:str, credential_list: list):
-    """ Reads txt_file of credentials starting with the
-        personal use script, secret key, app name, username, password in order.
+def read_creds(txt_file:str) -> list:
+    """ Reads txt_file of credentials and saves it to the credntial list.
+    
+    Args:
+        txt_file: A string representing the file name of the credentials text file.
+    
+    Returns:
+        A list of credentials that were appended to it from the text file.
+        This contains the personal use script, secret key, app name, username, password in order.
     """
+    credential_list = []
+
     with open(txt_file, 'r') as f:
         for l in f:
             # Appends the line with \n stripped
             credential_list.append(l.strip())
 
+    return credential_list
+
 
 def category_select(category: str, images: int):
     """Sorts the posts by the category the user selects.
-        category is a string representing the category selected
-        images is the number of images
+
+    Args:
+        category: A string representing the category selected to sort by.
+        images: An int representing the number of images to be scraped.
+    
+    Returns:
+        A list generator object that can be parsed using the next function.
     """
     # Switches to hot
     if (category.lower() == "hot"):
@@ -88,8 +125,17 @@ def category_select(category: str, images: int):
     return threads
 
 
-def scrape_media(num_image: int, subreddit: str, category: str):
+def scrape_media(num_image: int, subreddit: str, category: str) -> None:
     """ Scrapes media from the subreddit and saves it to its corresponding directory.
+
+    Args:
+        num_image: The number of images to scrape.
+        subreddit: The chosen subreddit to scrape.
+        category: The chosen category to sort by.
+
+    Returns:
+        None, since the function only saves directly saves the url's media to the directory.
+
     """
     image_number = 0
     posts = category_select(category, num_image)
@@ -107,11 +153,13 @@ def scrape_media(num_image: int, subreddit: str, category: str):
             urllib.request.urlretrieve(current_post.url, full_file_name)
             image_number += 1
         except: 
+            # Raise exception if media could not be saved to directory
             print("Image could not be downloaded: " + current_post.url)
             raise Exception
 
 # Calls ask_user and saves the list of credentials and list of 
-# inputs to reddit_credentials and user_input variables respectively 
+# inputs to reddit_credentials and user_input variables respectively
+ 
 reddit_credentials, user_input = ask_user()
 
 number_of_images = int(user_input[0])
