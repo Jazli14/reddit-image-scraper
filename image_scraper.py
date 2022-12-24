@@ -161,23 +161,25 @@ def scrape_media(num_image: int, subreddit: str, category: str) -> None:
             print("Image could not be downloaded: " + current_post.url)
             raise Exception
 
-# Calls ask_user and saves the list of credentials and list of 
-# inputs to reddit_credentials and user_input variables respectively
- 
-reddit_credentials, user_input = ask_user()
+            
+if __name__ == "__main__":
+    # Calls ask_user and saves the list of credentials and list of 
+    # inputs to reddit_credentials and user_input variables respectively
 
-number_of_images = int(user_input[0])
-chosen_subreddit = user_input[1]
-chosen_category = user_input[2]
+    reddit_credentials, user_input = ask_user()
 
-# Save the subreddit folder filepath
-subreddit_directory = create_subreddit_directory(chosen_subreddit)
+    number_of_images = int(user_input[0])
+    chosen_subreddit = user_input[1]
+    chosen_category = user_input[2]
 
-# Saves reddit object
-reddit = reddit_API(reddit_credentials)
+    # Save the subreddit folder filepath
+    subreddit_directory = create_subreddit_directory(chosen_subreddit)
 
-# Saves the subreddit object passing in the chosen_subreddit
-subreddit = reddit.subreddit(chosen_subreddit)
+    # Saves reddit object
+    reddit = reddit_API(reddit_credentials)
 
-# Calls scrape media to download the images and gifs from the subreddit
-scrape_media(number_of_images, chosen_subreddit, chosen_category)
+    # Saves the subreddit object passing in the chosen_subreddit
+    subreddit = reddit.subreddit(chosen_subreddit)
+
+    # Calls scrape media to download the images and gifs from the subreddit
+    scrape_media(number_of_images, chosen_subreddit, chosen_category)
